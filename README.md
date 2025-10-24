@@ -39,7 +39,17 @@ A modern, feature-rich Django web application for creating and managing technica
 
 ## 📸 Screenshots
 
-*Add your screenshots here*
+### Login Page
+![Login](screenshots/login.png)
+
+### Topic List
+![Topic List](screenshots/topic_list.png)
+
+### Entries List (Flashcards)
+![Entries List](screenshots/Entries_list.png)
+
+### Add Entry
+![Add Entry](screenshots/add_entry.png)
 
 ## 🚀 Getting Started
 
