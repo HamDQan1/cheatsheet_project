@@ -1,0 +1,33 @@
+{% extends "sheets/base.html" %}
+
+{% load markdown_extras %}
+
+{% block title %}Confirm Deletion{% endblock title %}
+
+{% block content %}
+  <div class="card">
+    <h2 class="space-bottom">Are you sure you want to delete this entry?</h2>
+
+    <article class="space-bottom">
+      <h3>{{ entry.title }}</h3>
+      
+      {% if entry.summary %}
+        <h4 class="muted">Summary (Front):</h4>
+        <div class="space-top space-bottom">
+          {{ entry.summary|markdown_to_html|safe }}
+        </div>
+      {% endif %}
+      
+      <h4 class="muted">{% if entry.summary %}Details (Back):{% else %}Content:{% endif %}</h4>
+      <div class="space-top">
+        {{ entry.content|markdown_to_html|safe }}
+      </div>
+    </article>
+
+    <form class="form-actions" method="post" action="{% url 'sheets:delete_entry' entry.id %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Confirm Delete</button>
+      <a href="{% url 'sheets:topic_detail' entry.topic.id %}" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+{% endblock content %}

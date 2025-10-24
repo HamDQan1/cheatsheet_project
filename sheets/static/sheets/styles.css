@@ -1,0 +1,1066 @@
+/*
+  Styles for Tech Cheatsheet
+  --------------------------
+  This file contains a small, beginner-friendly design system.
+  You can skim section headers and tweak the CSS variables below to change the theme.
+
+  How to customize quickly:
+    - Change colors in :root (e.g., --bg, --primary) to restyle the site
+    - Adjust --radius for more/less rounded corners
+    - Adjust --space for tighter/looser spacing
+    - Toggle between dark/light mode using the theme switcher button
+
+  Tip: Keep your HTML simple and reuse the utilities and components (buttons, cards, lists, forms).
+*/
+
+/* 1) THEME VARIABLES - DARK MODE (default) */
+:root {
+    --bg: #272626;
+    --panel: #1f1f1f;
+    --text: #e9f1ff;
+    /* readable on dark */
+    --muted: #a8b3c2;
+    /* softer text */
+    --primary: #4ea1ff;
+    /* blue-ish accent */
+    --primary-600: #3b83d5;
+    /* darker hover */
+    --danger: #ff5c5c;
+    /* danger actions */
+    --danger-600: #e34747;
+    /* danger hover */
+    --border: #3a3a3a;
+    --radius: 10px;
+    /* rounded corners */
+    --space: 1rem;
+    /* base spacing unit */
+    --font: "Lucida Console", "Courier New", monospace;
+    /* keep your vibe */
+    --maxw: 980px;
+    /* max content width */
+}
+
+/* 1b) THEME VARIABLES - LIGHT MODE */
+/*
+  Light mode is activated by adding data-theme="light" to the <html> element.
+  This is done via JavaScript based on user preference stored in localStorage.
+*/
+[data-theme="light"] {
+    --bg: #f5f5f5;
+    --panel: #ffffff;
+    --text: #1a1a1a;
+    --muted: #666666;
+    --primary: #2563eb;
+    --primary-600: #1d4ed8;
+    --danger: #dc2626;
+    --danger-600: #b91c1c;
+    --border: #e0e0e0;
+    /* Other variables stay the same: --radius, --space, --font, --maxw */
+}
+
+/* 2) CSS RESET + BASE TYPOGRAPHY */
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font);
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.5;
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth theme transition */
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+/* 3) LAYOUT HELPERS */
+.container {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 0 calc(var(--space));
+}
+
+main.container {
+    padding-top: calc(var(--space) * 1.5);
+    padding-bottom: calc(var(--space) * 2);
+}
+
+/* 4) HEADERS, LINKS, TEXT */
+h1,
+h2,
+h3 {
+    margin: 0 0 calc(var(--space) * .75);
+    line-height: 1.25;
+}
+
+p {
+    margin: 0 0 var(--space);
+}
+
+small {
+    color: var(--muted);
+}
+
+a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--primary-600);
+    text-decoration: underline;
+}
+
+.link-danger {
+    color: var(--danger);
+}
+
+.link-danger:hover {
+    color: var(--danger-600);
+}
+
+/* 5) HEADER + NAVIGATION */
+header.site-header {
+    border-bottom: 1px solid var(--border);
+    background: #1c1c1c;
+}
+
+.site-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: calc(var(--space) * .75) 0;
+    gap: var(--space);
+}
+
+/* Header left side: hamburger + brand */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Hamburger menu button in header */
+.header-sidebar-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1.3rem;
+}
+
+.header-sidebar-toggle:hover {
+    background: var(--bg);
+    border-color: var(--border);
+}
+
+.hamburger-icon {
+    display: block;
+    line-height: 1;
+}
+
+.brand {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+nav.user-nav {
+    display: flex;
+    align-items: center;
+    gap: .5rem .75rem;
+    flex-wrap: wrap;
+}
+
+/* 6) BUTTONS */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    height: 38px;
+    padding: 0 .9rem;
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    font: inherit;
+    cursor: pointer;
+    text-decoration: none;
+    /* so links styled like buttons look right */
+    transition: background .15s, color .15s, border-color .15s, opacity .15s;
+}
+
+.btn:hover {
+    opacity: .95;
+}
+
+.btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: #0b1220;
+    border-color: var(--primary-600);
+}
+
+.btn-primary:hover {
+    background: var(--primary-600);
+    color: #e8f0ff;
+}
+
+.btn-secondary {
+    background: #2d2d2d;
+    color: var(--text);
+    border-color: var(--border);
+}
+
+.btn-secondary:hover {
+    background: #373737;
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: #1a0f0f;
+    border-color: var(--danger-600);
+}
+
+.btn-danger:hover {
+    background: var(--danger-600);
+    color: #ffe9e9;
+}
+
+.btn-link {
+    background: transparent;
+    color: var(--primary);
+    border-color: transparent;
+    height: auto;
+    padding: 0;
+}
+
+.btn-link:hover {
+    color: var(--primary-600);
+    text-decoration: underline;
+}
+
+/* 7) CARDS/SECTIONS */
+.card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: calc(var(--space) * 1.0);
+}
+
+.stack>*+* {
+    margin-top: var(--space);
+}
+
+/* vertical spacing helper */
+
+/* 8) LISTS */
+.list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.list-item {
+    padding: .75rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.list-item:last-child {
+    border-bottom: none;
+}
+
+.item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+}
+
+.item-title {
+    font-weight: 600;
+}
+
+.item-actions {
+    display: inline-flex;
+    gap: .5rem;
+    flex-wrap: wrap;
+}
+
+/* 9) FORMS */
+form.form {
+    display: grid;
+    gap: .85rem;
+}
+
+form.form p {
+    margin: 0;
+}
+
+label {
+    display: inline-block;
+    margin-bottom: .35rem;
+    color: var(--muted);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+    width: 100%;
+    background: #151515;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: .6rem .7rem;
+}
+
+textarea {
+    min-height: 160px;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    gap: .5rem;
+    flex-wrap: wrap;
+}
+
+/* 10) UTILS */
+.muted {
+    color: var(--muted);
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.space-top {
+    margin-top: var(--space);
+}
+
+.space-bottom {
+    margin-bottom: var(--space);
+}
+
+/* 11) CONTENT: code blocks, hr, article spacing */
+pre,
+code {
+    font-family: var(--font);
+}
+
+pre {
+    background: #121212;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: .85rem;
+    overflow: auto;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid var(--border);
+    margin: var(--space) 0;
+}
+
+article+article {
+    margin-top: calc(var(--space) * 1.25);
+}
+
+/* 12) ALERTS (good for delete confirm pages) */
+.alert {
+    padding: .85rem 1rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+}
+
+.alert-warning {
+    background: #3a2a2a;
+    border-color: #5a3a3a;
+    color: #ffdfdf;
+}
+
+/* 13) FLIP CARDS - Flashcard System */
+/*
+  How flip cards work:
+  - .flip-card is the outer container with perspective for 3D depth
+  - .flip-card-inner holds both front and back, rotates when flipped
+  - .flip-card-front and .flip-card-back are positioned absolutely, stacked on top of each other
+  - When .flipped class is added to .flip-card, the inner container rotates 180deg
+  - backface-visibility hides the side facing away from you
+  
+  Customization:
+  - Change transition duration in .flip-card-inner (currently 0.6s)
+  - Adjust perspective value for more/less 3D effect (currently 1000px)
+  - Modify border styles on front/back to distinguish them
+*/
+
+.flip-card {
+    position: relative;
+    perspective: 1000px; /* Creates 3D space - larger = less dramatic perspective */
+    transition: transform 0.3s ease;
+    margin-bottom: var(--space); /* Ensure spacing between cards */
+}
+
+/* Container that does the actual rotation */
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    min-height: 200px; /* Increased minimum height to prevent overlaps */
+    transition: transform 0.6s; /* Smooth rotation animation */
+    transform-style: preserve-3d; /* Preserve 3D transforms on children */
+}
+
+/* When flipped, rotate the inner container 180 degrees */
+.flip-card.flipped .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+/* Front and back are absolutely positioned, stacked on each other */
+.flip-card-front,
+.flip-card-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 200px; /* Match the inner container height */
+    backface-visibility: hidden; /* Hide the back face when rotated away */
+    -webkit-backface-visibility: hidden; /* Safari support */
+    padding: 1rem;
+    border-radius: var(--radius);
+    background: var(--panel);
+}
+
+/* Front side - visible by default (no rotation) */
+.flip-card-front {
+    transform: rotateY(0deg);
+    border: 2px dashed var(--border); /* Dashed border to indicate "summary" side */
+}
+
+/* Back side - pre-rotated 180deg so it shows when parent flips */
+.flip-card-back {
+    transform: rotateY(180deg);
+    border: 2px solid var(--primary); /* Solid border with accent color for "detailed" side */
+}
+
+/* Content area inside each card face */
+.flip-card-content {
+    margin-bottom: 0.75rem;
+    /* Ensure markdown content renders nicely */
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+/* Hint text at bottom of each card face */
+.flip-hint {
+    text-align: center;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border);
+    margin-top: 0.75rem;
+}
+
+/* Make flip button visually distinct */
+.flip-trigger {
+    font-weight: 600;
+    background: var(--primary) !important;
+    color: #0b1220 !important;
+    border-color: var(--primary-600) !important;
+}
+
+.flip-trigger:hover {
+    background: var(--primary-600) !important;
+    color: #e8f0ff !important;
+    text-decoration: none;
+}
+
+/* Rotate icon smoothly when card flips */
+.flip-card.flipped .flip-icon {
+    transform: rotate(180deg);
+    display: inline-block;
+    transition: transform 0.6s;
+}
+
+.flip-icon {
+    display: inline-block;
+    transition: transform 0.6s;
+}
+
+/* Subtle hover effect on the entire card */
+.flip-card:hover {
+    transform: scale(1.01);
+}
+
+/* Make sure code blocks inside flip cards don't overflow */
+.flip-card-content pre {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+/* Accessibility: reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    .flip-card-inner {
+        transition: none;
+    }
+    .flip-card:hover {
+        transform: none;
+    }
+    .flip-icon {
+        transition: none;
+    }
+    body {
+        transition: none; /* No theme transition for reduced motion */
+    }
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 640px) {
+    .flip-card-front,
+    .flip-card-back {
+        padding: 0.75rem;
+        min-height: 120px;
+    }
+    
+    /* Stack action buttons vertically on small screens */
+    .flip-card .item-actions {
+        width: 100%;
+    }
+    
+    .flip-card .item-row {
+        flex-wrap: wrap;
+    }
+}
+
+/* 14) THEME TOGGLE BUTTON */
+/*
+  Theme toggle allows switching between dark and light modes.
+  The button sits in the header and shows a sun (for light mode) or moon (for dark mode) icon.
+  Preference is saved in localStorage and persists across sessions.
+*/
+
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 50%; /* Circular button */
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.2rem;
+}
+
+.theme-toggle:hover {
+    background: var(--primary);
+    color: var(--bg);
+    border-color: var(--primary);
+    transform: rotate(20deg); /* Playful rotation on hover */
+}
+
+.theme-toggle:active {
+    transform: scale(0.95);
+}
+
+/* Hide one icon at a time based on current theme */
+[data-theme="light"] .theme-icon-dark {
+    display: none;
+}
+
+[data-theme="dark"] .theme-icon-light,
+:root:not([data-theme]) .theme-icon-light {
+    display: none;
+}
+
+/* Smooth transitions for elements that change with theme */
+.card,
+.btn,
+header.site-header,
+input,
+textarea,
+select,
+pre {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Adjust code block backgrounds for light mode */
+[data-theme="light"] pre {
+    background: #f8f8f8;
+    border-color: var(--border);
+}
+
+[data-theme="light"] input[type="text"],
+[data-theme="light"] input[type="email"],
+[data-theme="light"] input[type="password"],
+[data-theme="light"] textarea,
+[data-theme="light"] select {
+    background: #fafafa;
+}
+
+/* Button adjustments for light mode - better contrast and readability */
+[data-theme="light"] .btn-primary {
+    background: var(--primary);
+    color: #ffffff; /* White text on blue background */
+    border-color: var(--primary-600);
+}
+
+[data-theme="light"] .btn-primary:hover {
+    background: var(--primary-600);
+    color: #ffffff;
+    text-decoration: none;
+}
+
+[data-theme="light"] .btn-secondary {
+    background: #e5e7eb; /* Light gray background */
+    color: #1f2937; /* Dark gray text */
+    border-color: #d1d5db;
+}
+
+[data-theme="light"] .btn-secondary:hover {
+    background: #d1d5db;
+    color: #111827;
+    text-decoration: none;
+}
+
+[data-theme="light"] .btn-danger {
+    background: var(--danger);
+    color: #ffffff; /* White text on red background */
+    border-color: var(--danger-600);
+}
+
+[data-theme="light"] .btn-danger:hover {
+    background: var(--danger-600);
+    color: #ffffff;
+    text-decoration: none;
+}
+
+[data-theme="light"] .btn-link {
+    color: var(--primary);
+}
+
+[data-theme="light"] .btn-link:hover {
+    color: var(--primary-600);
+}
+
+/* Theme toggle button in light mode */
+[data-theme="light"] .theme-toggle {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    color: #1f2937;
+}
+
+[data-theme="light"] .theme-toggle:hover {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+}
+
+/* Flip trigger button adjustments for light mode */
+[data-theme="light"] .flip-trigger {
+    background: var(--primary) !important;
+    color: #ffffff !important;
+    border-color: var(--primary-600) !important;
+}
+
+[data-theme="light"] .flip-trigger:hover {
+    background: var(--primary-600) !important;
+    color: #ffffff !important;
+}
+
+/* Flip card adjustments for light mode */
+[data-theme="light"] .flip-card-front {
+    border-color: var(--border);
+}
+
+[data-theme="light"] .flip-card-back {
+    border-color: var(--primary);
+}
+
+/* Header adjustment for light mode */
+[data-theme="light"] header.site-header {
+    background: #ffffff;
+    border-bottom-color: var(--border);
+}
+
+/* 15) SIDEBAR NAVIGATION - VS Code Style */
+/*
+  A collapsible sidebar navigation similar to VS Code's file explorer.
+  Features:
+  - Fixed position on the left
+  - Collapsible with toggle button
+  - Smooth slide animations
+  - Responsive (overlay on mobile)
+  - Persistent state via localStorage
+  
+  Structure:
+  - .app-layout: Flex container for sidebar + main content
+  - .sidebar: The left panel
+  - .main-content: The main content area (adjusts when sidebar opens/closes)
+*/
+
+/* App layout: flex container for activity bar + sidebar + main */
+.app-layout {
+    display: flex;
+    height: calc(100vh - 60px); /* Full height minus header */
+    overflow: hidden;
+}
+
+/* ==============================================
+   ACTIVITY BAR (VS Code-style vertical icon bar)
+   ============================================== */
+
+/*
+  Activity Bar Structure:
+  - Fixed 48px width vertical bar on the far left
+  - Contains icon buttons stacked vertically
+  - Always visible (like VS Code's activity bar)
+  - Extensible for future features
+*/
+
+.activity-bar {
+    width: 48px;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem 0;
+    gap: 0.25rem;
+    flex-shrink: 0; /* Don't shrink */
+    z-index: 101; /* Above sidebar */
+}
+
+/* Activity bar button items */
+.activity-bar-item {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    border-radius: 0;
+}
+
+/* Hover effect */
+.activity-bar-item:hover {
+    background: var(--hover);
+    color: var(--text);
+}
+
+/* Active state (for when a feature is selected) */
+.activity-bar-item.active {
+    color: var(--primary);
+    background: var(--hover);
+}
+
+/* Active indicator (left border like VS Code) */
+.activity-bar-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--primary);
+}
+
+/* Activity icon styling */
+.activity-icon {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+/* Sidebar container */
+.sidebar {
+    width: 250px;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, width 0.3s ease;
+    position: relative;
+    z-index: 100;
+}
+
+/* Sidebar header */
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel);
+}
+
+.sidebar-title {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    margin: 0;
+    font-weight: 600;
+}
+
+/* Sidebar toggle button (hamburger) */
+.sidebar-add-topic {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.sidebar-add-topic:hover {
+    background: var(--bg);
+    border-color: var(--border);
+}
+
+
+/* Sidebar content (scrollable) */
+.sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0.5rem 0;
+}
+
+/* Sidebar navigation list */
+.sidebar-nav {
+    padding: 0;
+}
+
+.sidebar-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-item {
+    margin: 0;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    color: var(--text);
+    text-decoration: none;
+    transition: background 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.sidebar-link:hover {
+    background: var(--bg);
+    text-decoration: none;
+}
+
+.sidebar-link-icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.sidebar-link-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Active/current topic highlight */
+.sidebar-item-active .sidebar-link {
+    background: var(--primary);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.sidebar-item-active .sidebar-link:hover {
+    background: var(--primary-600);
+}
+
+/* Sidebar footer (add button) */
+.sidebar-footer {
+    padding: 0.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.sidebar-add-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    color: #ffffff;
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: background 0.2s ease;
+}
+
+.sidebar-add-btn:hover {
+    background: var(--primary-600);
+    text-decoration: none;
+}
+
+.sidebar-add-icon {
+    font-size: 1rem;
+}
+
+/* Empty state */
+.sidebar-empty {
+    padding: 1.5rem 1rem;
+    text-align: center;
+}
+
+.sidebar-empty p {
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+/* Main content area */
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: margin-left 0.3s ease;
+}
+
+/* Sidebar collapsed state (supports both html and body for early initialization) */
+body.sidebar-collapsed .sidebar,
+html.sidebar-collapsed .sidebar {
+    transform: translateX(-250px); /* Slide out of view */
+}
+
+body.sidebar-collapsed .main-content,
+html.sidebar-collapsed .main-content {
+    margin-left: 0;
+}
+
+/* Sidebar overlay (mobile only) */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 60px; /* Below header */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Light mode sidebar adjustments */
+[data-theme="light"] .sidebar {
+    background: #fafafa;
+    border-right-color: var(--border);
+}
+
+[data-theme="light"] .sidebar-header {
+    background: #ffffff;
+}
+
+[data-theme="light"] .sidebar-link:hover {
+    background: #f0f0f0;
+}
+
+[data-theme="light"] .sidebar-item-active .sidebar-link {
+    background: var(--primary);
+    color: #ffffff;
+}
+
+[data-theme="light"] .sidebar-toggle:hover {
+    background: #f0f0f0;
+}
+
+/* Responsive: Mobile & Tablet */
+@media (max-width: 768px) {
+    /* Activity bar stays visible on mobile */
+    .activity-bar {
+        width: 48px;
+        position: fixed;
+        left: 0;
+        top: 60px; /* Below header */
+        bottom: 0;
+        z-index: 102;
+    }
+    
+    /* Sidebar becomes overlay on mobile */
+    .sidebar {
+        position: fixed;
+        top: 60px; /* Below header */
+        left: 48px; /* Right of activity bar */
+        bottom: 0;
+        z-index: 101;
+        transform: translateX(-100%); /* Hidden by default */
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Show overlay when sidebar is open (supports both html and body) */
+    body:not(.sidebar-collapsed) .sidebar-overlay,
+    html:not(.sidebar-collapsed) .sidebar-overlay {
+        display: block;
+        opacity: 1;
+    }
+    
+    /* Open sidebar on mobile (supports both html and body) */
+    body:not(.sidebar-collapsed) .sidebar,
+    html:not(.sidebar-collapsed) .sidebar {
+        transform: translateX(0);
+    }
+    
+    /* Main content accounts for activity bar on mobile */
+    .main-content {
+        margin-left: 48px !important; /* Space for activity bar */
+    }
+}
+
+/* Responsive: Desktop toggle button in header */
+@media (min-width: 769px) {
+    /* On desktop, sidebar is visible by default (supports both html and body) */
+    body:not(.sidebar-collapsed) .sidebar,
+    html:not(.sidebar-collapsed) .sidebar {
+        transform: translateX(0);
+    }
+}

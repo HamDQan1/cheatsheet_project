@@ -1,0 +1,23 @@
+{% extends "sheets/base.html" %}
+
+{% block title %}Add a New Topic{% endblock title %}
+
+{% block content %}
+  <!-- Simple form wrapped in a .card for visual separation -->
+  <div class="card">
+    <h2 class="space-bottom">Add a New Topic</h2>
+
+    <!--
+      Tip: we add class="form" so the base styles apply spacing to the fields.
+      {{ form.as_p }} outputs labels/inputs wrapped in <p> elements, which our CSS supports.
+    -->
+    <form class="form" method="post" action="{% url 'sheets:add_topic' %}">
+      {% csrf_token %}
+      {{ form.as_p }} 
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Add Topic</button>
+        <a href="{% url 'sheets:topic_list' %}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+{% endblock content %}

@@ -1,0 +1,13 @@
+{% extends "sheets/base.html" %}
+
+{% block title %}Register{% endblock title %}
+
+{% block content %}
+  <h2>Register an Account</h2>
+
+  <form method="post" action="{% url 'users:register' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Register</button>
+  </form>
+{% endblock content %}

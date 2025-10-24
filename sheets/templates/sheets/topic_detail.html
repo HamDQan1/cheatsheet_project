@@ -1,0 +1,135 @@
+{% extends "sheets/base.html" %}
+
+{% load markdown_extras %}
+
+{% block title %}{{ topic.title }}{% endblock title %}
+
+{% block content %}
+  <!-- Topic title and add-entry action -->
+  <div class="stack space-bottom">
+    <h2>{{ topic.title }}</h2>
+    <div class="form-actions">
+      <a class="btn btn-primary" href="{% url 'sheets:add_entry' topic.id %}">Add a new entry</a>
+    </div>
+  </div>
+
+  <!-- Flashcard-style entries rendered as flip cards -->
+  <div class="stack">
+  {% for entry in entries %}
+    <article class="card flip-card" data-entry-id="{{ entry.id }}">
+      <div class="item-row space-bottom">
+        <h3 class="item-title">{{ entry.title }}</h3>
+        <div class="item-actions">
+          <button class="btn btn-secondary flip-trigger" aria-label="Flip card to see {{ entry.summary|yesno:'details,summary' }}">
+            <span class="flip-icon">🔄</span> Flip
+          </button>
+          <a class="btn btn-secondary" href="{% url 'sheets:edit_entry' entry.id %}">Edit</a>
+          <a class="btn btn-danger" href="{% url 'sheets:delete_entry' entry.id %}">Delete</a>
+        </div>
+      </div>
+
+      <!-- Flip card inner container (rotates on flip) -->
+      <div class="flip-card-inner">
+        <!-- Front side: Summary -->
+        <div class="flip-card-front">
+          <div class="flip-card-content">
+            {% if entry.summary %}
+              {{ entry.summary|markdown_to_html|safe }}
+            {% else %}
+              <p class="muted"><em>No summary provided. Click "Flip" to see detailed content.</em></p>
+            {% endif %}
+          </div>
+          <div class="flip-hint muted">
+            <small>💡 Click "Flip" to see detailed content</small>
+          </div>
+        </div>
+
+        <!-- Back side: Detailed content -->
+        <div class="flip-card-back">
+          <div class="flip-card-content">
+            {{ entry.content|markdown_to_html|safe }}
+          </div>
+          <div class="flip-hint muted">
+            <small>💡 Click "Flip" to see summary</small>
+          </div>
+        </div>
+      </div>
+    </article>
+  {% empty %}
+    <p class="muted">No entries for this topic yet.</p>
+  {% endfor %}
+  </div>
+
+  <!-- JavaScript for flip interaction -->
+  <script>
+    // Flip card functionality
+    // This script adds click handlers to flip buttons to toggle the card rotation
+    document.addEventListener('DOMContentLoaded', () => {
+      // Function to set proper height for flip card containers
+      function updateFlipCardHeights() {
+        document.querySelectorAll('.flip-card').forEach(card => {
+          const inner = card.querySelector('.flip-card-inner');
+          const front = card.querySelector('.flip-card-front');
+          const back = card.querySelector('.flip-card-back');
+          
+          if (inner && front && back) {
+            // Reset min-height first to get accurate measurements
+            inner.style.minHeight = 'auto';
+            
+            // Force a reflow to ensure content is rendered
+            void inner.offsetHeight;
+            
+            // Get the natural height of both sides
+            const frontHeight = front.scrollHeight;
+            const backHeight = back.scrollHeight;
+            
+            // Set the container to the taller of the two
+            const maxHeight = Math.max(frontHeight, backHeight, 200); // At least 200px
+            inner.style.minHeight = maxHeight + 'px';
+          }
+        });
+      }
+      
+      // Set heights initially
+      updateFlipCardHeights();
+      
+      // Re-calculate after a short delay to ensure markdown/syntax highlighting is rendered
+      setTimeout(updateFlipCardHeights, 100);
+      setTimeout(updateFlipCardHeights, 500);
+      
+      // Update heights on window resize
+      window.addEventListener('resize', updateFlipCardHeights);
+      
+      // Also update when fonts/images finish loading
+      window.addEventListener('load', updateFlipCardHeights);
+      
+      // Find all flip trigger buttons
+      document.querySelectorAll('.flip-trigger').forEach(button => {
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          // Find the parent flip-card and toggle the flipped class
+          const card = e.target.closest('.flip-card');
+          card.classList.toggle('flipped');
+          
+          // Update button text based on state
+          const icon = button.querySelector('.flip-icon');
+          if (card.classList.contains('flipped')) {
+            button.setAttribute('aria-label', 'Flip card to see summary');
+          } else {
+            button.setAttribute('aria-label', 'Flip card to see details');
+          }
+        });
+      });
+      
+      // Optional: Add keyboard support (press 'f' to flip focused card)
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'f' || e.key === 'F') {
+          const focusedButton = document.activeElement;
+          if (focusedButton && focusedButton.classList.contains('flip-trigger')) {
+            focusedButton.click();
+          }
+        }
+      });
+    });
+  </script>
+{% endblock content %}

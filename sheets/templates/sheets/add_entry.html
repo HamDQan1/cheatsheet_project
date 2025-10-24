@@ -1,0 +1,18 @@
+{% extends "sheets/base.html" %}
+
+{% block title %}Add Entry to {{ topic.title }}{% endblock title %}
+
+{% block content %}
+  <div class="card">
+    <h2 class="space-bottom">Add a new entry for: <a href="{% url 'sheets:topic_detail' topic.id %}">{{ topic.title }}</a></h2>
+
+    <form class="form" method="post" action="{% url 'sheets:add_entry' topic.id %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Add Entry</button>
+        <a href="{% url 'sheets:topic_detail' topic.id %}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+{% endblock content %}

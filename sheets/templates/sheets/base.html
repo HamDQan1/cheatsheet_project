@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Cheatsheets{% endblock title %}</title>
+    {% load static %}
+    
+    <!-- Theme initialization script (runs before page renders to avoid flash) -->
+    <script>
+        // Initialize theme immediately to prevent flash of wrong theme
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+
+        // Initialize sidebar immediately to prevent flash of wrong state
+        (function() {
+            const savedCollapsed = localStorage.getItem('sidebarCollapsed');
+            if (savedCollapsed === 'true') {
+                // Add class to <html> element which exists at this point
+                document.documentElement.classList.add('sidebar-collapsed');
+            }
+        })();
+    </script>
+    
+    <!-- Critical CSS for sidebar collapse (prevents flash) -->
+    <style>
+        html.sidebar-collapsed .sidebar {
+            transform: translateX(-250px) !important;
+        }
+        html.sidebar-collapsed .main-content {
+            margin-left: 0 !important;
+        }
+    </style>
+    
+    <!-- Code highlighting theme (for code blocks inside entries) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+    <!-- Our own site styles (moved out from inline <style> into a static file) -->
+    <link rel="stylesheet" href="{% static 'sheets/styles.css' %}">
+    {% block extra_headings %}{% endblock extra_headings %}
+
+    
+</head>
+<body>
+    <!--
+      Header: shows brand on the left and auth actions on the right.
+      Tip: we use a .container inside to keep a nice max width.
+    -->
+    <header class="site-header">
+        <div class="container site-header-inner">
+            <h1 class="brand"><a href="/">Tech Cheatsheet</a></h1>
+
+            <nav class="user-nav">
+                <!-- Theme toggle button (moon for dark mode, sun for light mode) -->
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                    <span class="theme-icon-dark" aria-hidden="true">🌙</span>
+                    <span class="theme-icon-light" aria-hidden="true">☀️</span>
+                </button>
+                
+                {% if user.is_authenticated %}
+                    <span class="muted">Hello, {{ user.username }}.</span>
+                    <!-- Logout is a POST form for security (CSRF-protected) -->
+                    <form action="{% url 'users:logout' %}" method="post" class="logout-form">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary">Log Out</button>
+                    </form>
+                {% else %}
+                    <!-- Use link-style buttons for auth links -->
+                    <a href="{% url 'users:login' %}" class="btn btn-link">Log In</a>
+                    <a href="{% url 'users:register' %}" class="btn btn-primary">Register</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <!-- App layout wrapper: activity bar + sidebar + main content -->
+    <div class="app-layout">
+        <!-- Activity Bar: VS Code-style vertical icon bar (far left) -->
+        <aside class="activity-bar">
+            <!-- Sidebar toggle button -->
+            <button class="activity-bar-item" id="activity-sidebar-toggle" aria-label="Toggle sidebar" title="Toggle sidebar (Ctrl+B)">
+                <span class="activity-icon">☰</span>
+            </button>
+            
+            <!-- Future feature buttons go here -->
+            <!-- Example:
+            <button class="activity-bar-item" id="search-toggle" aria-label="Search" title="Search">
+                <span class="activity-icon">🔍</span>
+            </button>
+            <button class="activity-bar-item" id="settings-toggle" aria-label="Settings" title="Settings">
+                <span class="activity-icon">⚙️</span>
+            </button>
+            -->
+        </aside>
+
+        <!-- Include the sidebar (available on all pages) -->
+        {% include 'sheets/sidebar.html' %}
+
+        <!-- Main content area. Child templates fill the block below. -->
+        <main class="main-content" id="main-content">
+            <div class="container">
+                {% block content %}{% endblock content %}
+            </div>
+        </main>
+    </div>
+
+    <!-- Sidebar Toggle JavaScript -->
+    <script>
+        /*
+          Sidebar Toggle System
+          ---------------------
+          Manages collapsible sidebar navigation.
+          Features:
+          - Toggle button to collapse/expand
+          - Keyboard shortcut: Ctrl+B (like VS Code)
+          - Mobile overlay click-to-close
+          - Persistent state in localStorage
+        */
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const activitySidebarToggle = document.getElementById('activity-sidebar-toggle');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            
+            // Get saved sidebar state from localStorage
+            function getSidebarState() {
+                const saved = localStorage.getItem('sidebarCollapsed');
+                return saved === 'true'; // Returns true if collapsed
+            }
+            
+            // Apply sidebar state to document
+            function setSidebarState(collapsed) {
+                if (collapsed) {
+                    document.body.classList.add('sidebar-collapsed');
+                    document.documentElement.classList.add('sidebar-collapsed');
+                } else {
+                    document.body.classList.remove('sidebar-collapsed');
+                    document.documentElement.classList.remove('sidebar-collapsed');
+                }
+                localStorage.setItem('sidebarCollapsed', collapsed);
+            }
+            
+            // Toggle sidebar
+            function toggleSidebar() {
+                const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+                setSidebarState(!isCollapsed);
+            }
+            
+            // Initialize sidebar state
+            setSidebarState(getSidebarState());
+            
+
+            
+            // Activity bar toggle button click handler (always visible)
+            if (activitySidebarToggle) {
+                activitySidebarToggle.addEventListener('click', toggleSidebar);
+            }
+            
+            // Overlay click handler (mobile: close sidebar)
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', () => {
+                    setSidebarState(true); // Collapse on overlay click
+                });
+            }
+            
+            // Keyboard shortcut: Ctrl+B to toggle sidebar (like VS Code)
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.key === 'b') {
+                    e.preventDefault();
+                    toggleSidebar();
+                }
+            });
+        });
+    </script>
+
+    <!-- Theme Toggle JavaScript -->
+    <script>
+        /*
+          Theme Toggle System
+          -------------------
+          Allows users to switch between dark and light modes.
+          Preference is saved in localStorage and persists across sessions.
+          Also respects system theme preference if no saved preference exists.
+        */
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('theme-toggle');
+            const htmlElement = document.documentElement;
+            
+            // Get current theme from localStorage or system preference
+            function getCurrentTheme() {
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme) {
+                    return savedTheme;
+                }
+                // Check system preference
+                const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                return systemPrefersDark ? 'dark' : 'light';
+            }
+            
+            // Apply theme to the document
+            function setTheme(theme) {
+                htmlElement.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+            }
+            
+            // Toggle between themes
+            function toggleTheme() {
+                const currentTheme = htmlElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                setTheme(newTheme);
+            }
+            
+            // Add click handler to toggle button
+            if (themeToggle) {
+                themeToggle.addEventListener('click', toggleTheme);
+            }
+            
+            
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <!-- Mermaid JS (from jsDelivr — a real CDN) -->
+    <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ 
+        startOnLoad: true,
+        theme: 'default',
+        securityLevel: 'loose' // needed if inside Django templates
+    });
+    </script>
+    <!-- KaTeX (from cdnjs) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false}
+        ]
+        });
+    });
+    </script>
+</body>
+</html>

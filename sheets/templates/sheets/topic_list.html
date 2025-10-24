@@ -1,0 +1,39 @@
+{% extends "sheets/base.html" %}
+
+{% block title %}All Topics{% endblock title %}
+
+
+
+{% block extra_headings %}{% endblock extra_headings %}
+
+{% block content %}
+  <!-- Page title + primary action -->
+  <div class="stack space-bottom">
+    <h2>Topics</h2>
+    <div class="form-actions">
+      <!-- Link styled as a primary button -->
+      <a class="btn btn-primary" href="{% url 'sheets:add_topic' %}">Add a new topic</a>
+    </div>
+  </div>
+
+  <!-- Topics list inside a card. Each item is a row with actions on the right. -->
+  <div class="card">
+    <ul class="list">
+      {% for topic in topics %}
+        <li class="list-item">
+          <div class="item-row">
+            <div class="item-title">
+              <a href="{% url 'sheets:topic_detail' topic.id %}">{{ topic.title }}</a>
+            </div>
+            <div class="item-actions">
+              <a class="btn btn-secondary" href="{% url 'sheets:edit_topic' topic.id %}">Edit</a>
+              <a class="btn btn-danger" href="{% url 'sheets:delete_topic' topic.id %}">Delete</a>
+            </div>
+          </div>
+        </li>
+      {% empty %}
+        <li class="list-item muted">No topics have been added yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock content %}

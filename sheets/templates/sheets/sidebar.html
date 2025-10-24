@@ -1,0 +1,54 @@
+<!--
+  Sidebar Navigation - VS Code Style
+  ----------------------------------------
+  This sidebar displays all topics in a collapsible left panel.
+  Features:
+  - Collapsible toggle (hamburger button)
+  - Highlights current topic
+  - Smooth slide animations
+  - Persists open/closed state in localStorage
+-->
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h3 class="sidebar-title">Topics</h3>
+    <button class="sidebar-add-topic" id="sidebar-add-topic" aria-label="Add topic" title="Add topic (Ctrl+B)">
+      <a href="{% url 'sheets:add_topic' %}" class="sidebar-add-btn" title="Add new topic">
+            <span class="sidebar-add-icon">➕</span>
+          </a>
+    </button>
+  </div>
+
+  <div class="sidebar-content">
+    {% if user.is_authenticated %}
+      {% if all_topics %}
+        <nav class="sidebar-nav">
+          <ul class="sidebar-list">
+            {% for topic in all_topics %}
+              <li class="sidebar-item {% if topic.id == current_topic_id %}sidebar-item-active{% endif %}">
+                <a href="{% url 'sheets:topic_detail' topic.id %}" class="sidebar-link" title="{{ topic.title }}">
+                  <span class="sidebar-link-icon">📄</span>
+                  <span class="sidebar-link-text">{{ topic.title }}</span>
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </nav>
+
+
+      {% else %}
+        <div class="sidebar-empty">
+          <p class="muted">No topics yet.</p>
+          <a href="{% url 'sheets:add_topic' %}" class="btn btn-primary btn-small">Create First Topic</a>
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="sidebar-empty">
+        <p class="muted">Please log in to view topics.</p>
+      </div>
+    {% endif %}
+  </div>
+</aside>
+
+<!-- Sidebar overlay for mobile (closes sidebar when clicked) -->
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
